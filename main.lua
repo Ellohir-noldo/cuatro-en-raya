@@ -64,11 +64,13 @@ function love.update(dt)
 	
 	-- check for winners
 	if not falling then
+	
+		-- horizontally
 		for i = 0, size.x/tile do
 			count = 0
 			for j = 0, size.y/tile do
 				if board[i][j] == -1 then break
-				elseif board[i][j] == board[i][j + 1] then
+				elseif board[i][j] == board[i+1][j] then
 					counter = counter +1;
 				end
 				if counter >= 3 then
@@ -78,13 +80,12 @@ function love.update(dt)
 			end
 		end
 		
-		
-		
+		-- vertically
 		for i = 0, size.x/tile do
 			count = 0
 			for j = 0, size.y/tile do
 				if board[j][i] == -1 then break
-				elseif board[j][i] == board[j+1][i] then
+				elseif board[j][i] == board[j][i+1] then
 					counter = counter +1;
 				end
 				if counter >= 3 then
@@ -93,6 +94,11 @@ function love.update(dt)
 				end
 			end
 		end
+		
+		-- diagonal /
+		
+		-- diagonal \
+		
 	end
 	
 end
@@ -131,6 +137,9 @@ function love.draw()
 	-- draw pieces
 	for i = 0, size.x/tile do
 		for j = 0, size.y/tile do
+			love.graphics.setColor(0,255,0);
+			love.graphics.print("p"..i..j, i*tile+tile/2, j*tile+tile/2);
+		
 			if board[i][j] == 1 then
 				love.graphics.setColor(pl1)
 				love.graphics.circle('fill',i*tile+tile/2, j*tile+tile/2, tile/2, 20)
@@ -141,16 +150,18 @@ function love.draw()
 		end
 	end
 
-	-- draw the hover
-	if turn then
-		love.graphics.setColor(pl1)
-	else 
-		love.graphics.setColor(pl2)
-	end
-	love.graphics.circle('fill',hover.x*tile+tile/2, hover.y*tile+tile/2, tile/3, 20)
-	
+
 	if winner ~= -1 then
+		-- win message
 		love.graphics.setColor(0,255,0);
 		love.graphics.print("WINNER: PLAYER"..winner, 0, 0, 0, 3,3);
+	else
+		-- draw the hover
+		if turn then
+			love.graphics.setColor(pl1)
+		else 
+			love.graphics.setColor(pl2)
+		end
+		love.graphics.circle('fill',hover.x*tile+tile/2, hover.y*tile+tile/2, tile/3, 20)
 	end
 end

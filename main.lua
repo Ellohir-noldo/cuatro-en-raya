@@ -13,12 +13,12 @@ function love.load()
 	down.y = -1
 	
 	size = {}
-	size.x = 600
-	size.y = 400
+	size.x = 700
+	size.y = 500
 	tile = 100
 	
-	bkg = {20, 20, 255, 255}
-	pl1 = {255, 20, 20, 255}
+	bkg = {60, 60, 255, 255}
+	pl1 = {255, 60, 60, 255}
 	pl2 = {240, 240, 240, 255}
 	turn = true
 	falling = false
@@ -26,6 +26,9 @@ function love.load()
 	fpiece.x = -1
 	fpiece.y = -1
 	ftime = 0
+	
+	counter = 0
+	winner = -1
 	
 	board= {}          -- create the matrix
 	for i=0,size.x/tile do
@@ -59,12 +62,44 @@ function love.update(dt)
 		end
 	end
 	
+	-- check for winners
+	if not falling then
+		for i = 0, size.x/tile do
+			count = 0
+			for j = 0, size.y/tile do
+				if board[i][j] == -1 then break
+				elseif board[i][j] == board[i][j + 1] then
+					counter = counter +1;
+				end
+				if counter >= 3 then
+					winner = board[i][j]
+					return
+				end
+			end
+		end
+		
+		
+		
+		for i = 0, size.x/tile do
+			count = 0
+			for j = 0, size.y/tile do
+				if board[j][i] == -1 then break
+				elseif board[j][i] == board[j+1][i] then
+					counter = counter +1;
+				end
+				if counter >= 3 then
+					winner = board[i][j]
+					return
+				end
+			end
+		end
+	end
 	
 end
 
 
 function love.mousereleased(x, y, button)
-	if button == "l" and not falling then
+	if button == "l" and not falling and winner == -1 then
 		if turn == true then
 			board[hover.x][hover.y] = 1
 		else
@@ -114,6 +149,8 @@ function love.draw()
 	end
 	love.graphics.circle('fill',hover.x*tile+tile/2, hover.y*tile+tile/2, tile/3, 20)
 	
-
-	
+	if winner ~= -1 then
+		love.graphics.setColor(0,255,0);
+		love.graphics.print("WINNER: PLAYER"..winner, 0, 0, 0, 3,3);
+	end
 end
